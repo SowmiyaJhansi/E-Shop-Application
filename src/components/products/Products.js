@@ -8,10 +8,15 @@ import { Nav, PrivateRoute } from '_components';
 import { history } from '_helpers';
 import { Home } from 'home';
 import { Login } from 'login';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import CollectionPreview from '../collection-preview/Collection-preview.component';
+import { selectCollectionsForPreview } from '../../redux/shop/shop.selector';
+import { CollectionsOverviewContainer } from './collections-overview.styles';
 
 export { App };
 
-export default function MultiActionAreaCard() {
+function MultiActionAreaCard() {
     return (
       <Card sx={{ maxWidth: 345 }}>
         <CardActionArea>
@@ -50,6 +55,20 @@ export default function MultiActionAreaCard() {
       </div>
     );
   }
+
+const CollectionsOverview = ({ collections }) => (
+    <CollectionsOverviewContainer>
+        {collections.map(({ id, ...otherCollectionProps }) => (
+            <CollectionPreview key={id} {...otherCollectionProps} />
+        ))}
+    </CollectionsOverviewContainer>
+);
+
+const mapStateToProps = createStructuredSelector({
+    collections: selectCollectionsForPreview
+});
+
+export default connect(mapStateToProps)(CollectionsOverview)(MultiActionAreaCard);
 
 function App() {
     return (
